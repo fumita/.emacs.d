@@ -1,0 +1,68 @@
+((("load-theme" .
+   [1 0 0 0 0 0 0 0 0 0])
+  ("load" .
+   [1 0 0 0])
+  ("custom-theme-load-path" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("company" .
+   [3 0 0 0 0 0 0])
+  ("company-quickhelp-mode" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0])
+  ("l" .
+   [2])
+  (":height" .
+   [1 0 0 0 0 0 0])
+  (":family" .
+   [1 0 0 0 0 0 0])
+  ("default" .
+   [1 0 0 0 0 0 0])
+  ("set-face-attribute" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("font-family-list" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("print" .
+   [1 0 0 0 0])
+  ("x-list-fonts" .
+   [0 0 0 0 0 0 0 0 0 0 0 1])
+  ("dolist" .
+   [1 0 0 0 0 0])
+  ("lsh" .
+   [0 0 1])
+  ("multi-term-pkg" .
+   [0 0 0 0 0 0 0 0 0 0 0 1 0 0])
+  ("global-hl-line-mode" .
+   [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0])
+  ("blink-cursor" .
+   [0 0 0 0 0 0 0 0 0 0 0 1])
+  ("make-backup-file" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("inhibit-startup-message" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0])
+  ("inhibit-startup-hooks" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0])
+  ("setq" .
+   [3 0 0 0])
+  ("global-git-gutter-mode" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("nil" .
+   [4 0 0])
+  ("git-gutter" .
+   [0 0 0 0 0 0 0 0 0 1])
+  ("require" .
+   [0 0 0 0 0 0 2])
+  ("when" .
+   [2 0 0 0])
+  ("flycheck" .
+   [1 0 0 0 0 0 0 1])
+  ("shell-file-name" .
+   [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0])
+  ("global-set-key" .
+   [1 0 0 0 0 0 0 1 0 0 0 0 0 1])
+  ("kbd" .
+   [1 0 0])
+  ("multi-term" .
+   [1 0 0 0 0 0 0 0 0 0])
+  ("internal" .
+   [2 0 0 0 0 0 0 0])
+  ("defun" .
+   [0 0 0 0 2])))
