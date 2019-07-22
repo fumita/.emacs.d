@@ -1,167 +1,171 @@
-(defun add-to-load-path (&rest paths)
-  (let (path)
-    (dolist (path paths paths)
-      (let ((default-directory
-	      (expand-file-name (concat user-emacs-directory path))))
-	(add-to-list `load-path default-directory)
-	(if (fboundp `normal-top-level-add-subdirs-to-load-path)
-	    (normal-top-level-add-subdirs-to-load-path))))))
-
-(add-to-load-path "elisp" "conf" "public_repos")
-
-(require 'package)
-(add-to-list
- 'package-archives
- '("marmalade" . "https://marmalade-repo.org/packages/") t)
-(add-to-list
- 'package-archives
- '("melpa" . "https://melpa.org/packages/") t)
-
-(package-initialize)
-
-(when window-system
-  (tool-bar-mode 0)
-  (scroll-bar-mode 0)
-  (menu-bar-mode 0))
-
-;;キーバインド
-(global-set-key (kbd "C-m") 'newline-and-indent)
-(define-key global-map (kbd "C-c l") 'toggle-truncate-lines)
-(define-key global-map (kbd "C-t") 'other-window)
-(setq inhibit-startup-message t)
-(setq make-backup-file nil)
-(blink-cursor-mode 0)
-(global-hl-line-mode t)
-
-;;パス設定
-(add-to-list 'exec-path "/usr/local/bin")
-
-;;文字コード設定
-(set-language-environment "Japanese")
+(set-language-environment 'Japanese)
+(set-language-environment 'utf-8)
 (prefer-coding-system 'utf-8)
 
-;;;;フレーム設定
-;;カラム番号を表示
+
+; key bind
+; ----------------
+;; C-h
+(global-set-key "\C-h" 'delete-backward-char)
+;; help
+(global-set-key "\C-c\C-h" 'help-command)
+;; comment out
+(global-set-key "\C-c;" 'comment-dwim)
+;; window operation
+(global-set-key "\C-t" 'other-window)
+
+; ---- 括弧を自動で補完する
+(electric-pair-mode 1)
+;; tabにスペース４つを利用
+(setq-default tab-width 4 indent-tabs-mode nil)
+;; デフォルトの起動時のメッセージを表示しない
+(setq inhibit-startup-message t)
+;; 列の番号
 (column-number-mode t)
-(size-indication-mode t)
-(setq display-time-day-and-date t)
-(setq display-time-24hr-format t)
-(display-time-mode t)
-(display-battery-mode t)
-(setq frame-title-format "%f")
-(global-linum-mode 0)
+;; 行番号の表示
+(global-linum-mode t)
+;; 1行ごとの改ページ
+(setq scroll-conservatively 1)
+;; 対応する括弧を光らせる
+(show-paren-mode 1)
+(setq show-pxaren-delay 0)
+(setq show-paren-style 'expression)
 
-;;font settings
-(set-face-attribute 'default nil :family "Cica" :height 130)
-															
-;;tab setting
-(setq-default tab-width 4)
+;; neotree
+(global-set-key [f8] 'neotree-toggle)
 
-(setq show-paren-delay 0)
-(show-paren-mode t)
+;; メニューバー
+(menu-bar-mode -1)
+;; ツールバーの非表示
+(tool-bar-mode -1)
+;; package管理
+(require 'package)
+;; MELPAを追加
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; MELPA-stableを追加
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+;; Marmaladeを追加
+(add-to-list 'package-archives  '("marmalade" . "http://marmalade-repo.org/packages/") t)
+;; Orgを追加
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+;; 初期化
+(package-initialize)
 
-(global-auto-revert-mode t)
-(setq make-backup-files nil)
-(setq auto-save-default nil)
+;; Doom
+  (use-package doom-themes
+    :custom
+    (doom-themes-enable-italic t)
+    (doom-themes-enable-bold t)
+    :custom-face
+    (doom-modeline-bar ((t (:background "#6272a4"))))
+    :config
+    (load-theme 'doom-dracula t)
+    (doom-themes-neotree-config)
+    (doom-themes-org-config))
+(use-package all-the-icons)
+(use-package doom-modeline
+  :ensure
+  :hook (after-init . doom-modeline-mode))
 
-(add-hook 'after-save-hook
-		  'executable-make-buffer-file-executable-if-script-p)
+;; flycheck
+(global-flycheck-mode)
 
-(defun elisp-mode-hooks ()
-  "lisp-mode-hooks"
-  (when (require 'eldoc nil t)
-	(setq eldoc-idle-delay 0.2)
-	(setq eldoc-echo-are-use-multiline-p t)
-	(turn-on-eldoc-mode)))
-(add-hook 'emacs-lisp-mode-hool 'elisp-mode-hooks)
-
-;;Theme setting
-(load-theme 'solarized-dark t)
-
-;;ivy/counsel settings
+;; counsel
 (ivy-mode 1)
+(counsel-mode 1)
 
 ;; company
-(require 'company)
-(global-company-mode t)
-;; (company-quickhelp-mode nil)
-(define-key company-active-map (kbd "M-n") nil)
-(define-key company-active-map (kbd "M-p") nil)
-(define-key company-active-map (kbd "C-n") 'company-select-next)
-(define-key company-active-map (kbd "C-p") 'company-select-previous)
-(define-key company-active-map (kbd "C-h") nil)
-  
-;;color-moccur settings
-(when (require 'color-moccur nil t)
-  (define-key global-map (kbd "M-o") 'occur-by-moccur)
-  (setq moccur-split-word t)
-  (add-to-list 'dmoccur-exclusion-mask "\\.DS_Store")
-  (add-to-list 'dmoccur-exclusion-mask "^#.+#$"))
+(global-company-mode) ; 全バッファで有効にする 
+(setq company-idle-delay 0) ; デフォルトは0.5
+(setq company-minimum-prefix-length 2) ; デフォルトは4
+(setq company-selection-wrap-around t) ; 候補の一番下でさらに下に行こうとすると一番上に戻る
 
+;; タイトルにフルパス表示
+(setq frame-title-format "%f")
 
-;;wgrep settings
-(require 'wgrep nil t)
+;;current directory 表示
+(let ((ls (member 'mode-line-buffer-identification
+                  mode-line-format)))
+  (setcdr ls
+    (cons '(:eval (concat " ("
+            (abbreviate-file-name default-directory)
+            ")"))
+          (cdr ls))))
 
-;;undohist settings
-(when (require 'undohist nil t)
-  (undohist-initialize))
+;; Rust
+(add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
+;;; rust-modeでrust-format-on-saveをtにすると自動でrustfmtが走る
+(eval-after-load "rust-mode"
+  '(setq-default rust-format-on-save t))
+;;; rustのファイルを編集するときにracerとflycheckを起動する
+(add-hook 'rust-mode-hook (lambda ()
+                            (racer-mode)
+                            (flycheck-rust-setup)))
+;;; racerのeldocサポートを使う
+(add-hook 'racer-mode-hook #'eldoc-mode)
+;;; racerの補完サポートを使う
+(add-hook 'racer-mode-hook (lambda ()
+                             (company-mode)
+                             ;;; この辺の設定はお好みで
+                             (set (make-variable-buffer-local 'company-idle-delay) 0.1)
+                             (set (make-variable-buffer-local 'company-minimum-prefix-length) 0)))
 
-;;point-undo settings
-(when (require 'point-undo nil t)
-  (define-key global-map (kbd "M-[") 'point-undo)
-  (define-key global-map (kbd "M-]") 'point-redo))
+;; リージョンのハイライト
+(transient-mark-mode 1)
 
-;;elscreen settings
-(setq elscreen-prefix-key (kbd "C-t"))
-(when (require 'elscreen nil t)
-  (elscreen-start))
+;; default scroll bar消去
+(scroll-bar-mode -1)
 
-;;cua-mode settigs
-(cua-mode t)
-(setq cua-enable-cua-keys nil)
+;; 現在ポイントがある関数名をモードラインに表示
+(which-function-mode 1)
 
-;;php-mode settings
-(when (require 'php-mode nil t)
-  (setq php-site-url "https://secure.php.net/"
-		php-manual-url 'ja))
+;; hide mode line
+  (use-package hide-mode-line
+    :hook
+    ((neotree-mode imenu-list-minor-mode minimap-mode) . hide-mode-line-mode))
 
-;;ruby-mode settings
-(add-hook 'ruby-mode-hook #'ruby-electric-mode)
+;; alpha
+(if window-system 
+    (progn
+      (set-frame-parameter nil 'alpha 95)))
 
-;;python-mode settings
-(setq python-check-command "flake8")
+;; ターミナルで起動したときにメニューを表示しない
+(if (eq window-system 'x)
+    (menu-bar-mode 1) (menu-bar-mode 0))
+(menu-bar-mode nil)
 
-;;flycheck-settings
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(with-eval-after-load 'flycheck
-  (flycheck-pos-tip-mode))
+;; scratchの初期メッセージ消去
+(setq initial-scratch-message "")
 
-;;ac-emoji settings
-(when (require 'ac-emoji nil t)
-  (add-to-list 'ac-modes 'text-mode)
-  (add-to-list 'ac-modes 'markdown-mode)
-  (add-hook 'text-mode-hook 'ac-emoji-setup)
-  (add-hook 'markdown-mode-hook 'ac-emoji-setup))
+;; スクロールは1行ごとに
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 5)))
 
-;;git-gutter settings
-(when (require 'git-gutter nil t)
-  (global-git-gutter-mode t))
+;; スクロールの加速をやめる
+(setq mouse-wheel-progressive-speed nil)
 
-;;multi-term settings
-(when (require 'multi-term nil t)
-  (setq multi-term-program shell-file-name))
-(global-set-key (kbd "C-c t") 'multi-term)
+;; bufferの最後でカーソルを動かそうとしても音をならなくする
+(defun next-line (arg)
+  (interactive "p")
+  (condition-case nil
+      (line-move arg)
+    (end-of-buffer)))
+
+;; エラー音をならなくする
+(setq ring-bell-function 'ignore)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(doom-themes-enable-bold t)
+ '(doom-themes-enable-italic t)
  '(package-selected-packages
-   '(multiple-cursors swiper-helm counsel company-quickhelp company git-gutter magit ac-emoji quickrun flycheck inf-ruby ruby-electric yaml-mode php-mode elscreen point-undo undohist wgrep color-moccur auto-complete helm zenburn-theme multi-term)))
+   (quote
+    (elixir-mode evil-magit neotree flycheck-rust racer rust-mode magit company counsel flycheck lsp-mode hide-mode-line doom-modeline doom-themes use-package ## zenburn-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(doom-modeline-bar ((t (:background "#6272a4")))))
